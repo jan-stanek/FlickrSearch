@@ -9,6 +9,7 @@ import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +28,10 @@ public class PhotoList {
     }
 
     public void add(Photo photo) {
-        photo.setRank(countRank(photo));
-        photos.add(photo);
+        try {
+            photo.setRank(countRank(photo));
+            photos.add(photo);
+        } catch (Exception e) { }
     }
 
     public void sort() {
@@ -43,28 +46,22 @@ public class PhotoList {
         return photos;
     }
 
-    private double countRank(Photo photo) {
+    private double countRank(Photo photo) throws Exception {
         if (color == null)
             return 0;
 
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new URL(photo.getThumbUrl()));
+        BufferedImage bufferedImage = ImageIO.read(new URL(photo.getThumbUrl()));
 
-            double distance = 0;
+        double distance = 0;
 
-            for (int x = 0; x < bufferedImage.getWidth(); x++) {
-                for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                    int color = bufferedImage.getRGB(x, y);
-                    Color c = new Color((color & 0x00ff0000) >> 16, (color & 0x0000ff00) >> 8, color & 0x000000ff);
-                    distance += c.distanceTo(this.color);
-                }
+        for (int x = 0; x < bufferedImage.getWidth(); x++) {
+            for (int y = 0; y < bufferedImage.getHeight(); y++) {
+                int color = bufferedImage.getRGB(x, y);
+                Color c = new Color((color & 0x00ff0000) >> 16, (color & 0x0000ff00) >> 8, color & 0x000000ff);
+                distance += c.distanceTo(this.color);
             }
-
-            return distance / (bufferedImage.getWidth() * bufferedImage.getHeight());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        return 0;
+        return distance / (bufferedImage.getWidth() * bufferedImage.getHeight());
     }
 }
