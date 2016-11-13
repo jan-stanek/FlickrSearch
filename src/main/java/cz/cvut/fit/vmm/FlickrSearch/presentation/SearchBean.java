@@ -1,8 +1,8 @@
 package cz.cvut.fit.vmm.FlickrSearch.presentation;
 
 import cz.cvut.fit.vmm.FlickrSearch.business.SearchModel;
-import cz.cvut.fit.vmm.FlickrSearch.data.dao.PhotoDao;
-import cz.cvut.fit.vmm.FlickrSearch.data.entity.Photo;
+import cz.cvut.fit.vmm.FlickrSearch.business.PhotoFacade;
+import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SearchBean implements Serializable {
 
     @Inject
-    private PhotoDao photoDao;
+    private PhotoFacade photoFacade;
 
     private SearchModel searchModel;
 
@@ -46,6 +46,6 @@ public class SearchBean implements Serializable {
     }
 
     public void searchPhotos() {
-        searchResult = photoDao.search(searchModel).getPhotos();
+        searchResult = photoFacade.search(searchModel).getPhotos();
     }
 }

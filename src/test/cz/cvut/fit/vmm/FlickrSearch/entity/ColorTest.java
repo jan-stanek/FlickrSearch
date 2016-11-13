@@ -1,4 +1,4 @@
-package cz.cvut.fit.vmm.FlickrSearch.data.entity;
+package cz.cvut.fit.vmm.FlickrSearch.entity;
 
 import junit.framework.TestCase;
 

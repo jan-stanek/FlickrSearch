@@ -1,23 +1,23 @@
-package cz.cvut.fit.vmm.FlickrSearch.data.dao.flickr;
+package cz.cvut.fit.vmm.FlickrSearch.business.flickr;
 
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.REST;
 import com.flickr4java.flickr.photos.SearchParameters;
 import cz.cvut.fit.vmm.FlickrSearch.business.PhotoList;
-import cz.cvut.fit.vmm.FlickrSearch.data.entity.Color;
-import cz.cvut.fit.vmm.FlickrSearch.data.entity.Photo;
+import cz.cvut.fit.vmm.FlickrSearch.entity.Color;
+import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 import cz.cvut.fit.vmm.FlickrSearch.business.SearchModel;
-import cz.cvut.fit.vmm.FlickrSearch.data.dao.PhotoDao;
+import cz.cvut.fit.vmm.FlickrSearch.business.PhotoFacade;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class FlickrPhotoDaoImpl implements PhotoDao {
+public class FlickrFacade implements PhotoFacade {
 
     private Flickr flickr;
 
-    public FlickrPhotoDaoImpl() {
+    public FlickrFacade() {
         String apiKey = "077058273325165605911344e25e08ca";
         String sharedSecret = "4efacc8562efec7f";
 

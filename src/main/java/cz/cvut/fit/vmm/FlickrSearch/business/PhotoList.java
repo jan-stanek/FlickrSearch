@@ -1,15 +1,10 @@
 package cz.cvut.fit.vmm.FlickrSearch.business;
 
-import cz.cvut.fit.vmm.FlickrSearch.data.entity.Color;
-import cz.cvut.fit.vmm.FlickrSearch.data.entity.Photo;
-import javafx.util.Pair;
+import cz.cvut.fit.vmm.FlickrSearch.entity.Color;
+import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.imageio.ImageIO;
-import java.awt.geom.Arc2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
