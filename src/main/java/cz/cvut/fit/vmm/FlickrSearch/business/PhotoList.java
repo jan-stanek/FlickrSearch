@@ -32,7 +32,7 @@ public class PhotoList {
     public void sort() {
         Collections.sort(photos, new Comparator<Photo>() {
             public int compare(final Photo p1, final Photo p2) {
-                return (int) (p1.getRank() - p2.getRank());
+                return (int) Math.signum(p1.getRank() - p2.getRank());
             }
         });
     }

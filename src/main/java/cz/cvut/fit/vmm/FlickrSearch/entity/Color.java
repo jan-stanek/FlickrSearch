@@ -8,14 +8,14 @@ import java.io.Serializable;
 public class Color implements Serializable {
 
     private int red, green, blue;
-    private double L, a, b;
+    private double L, c, h, a, b;
 
     public Color(int red, int green, int blue) {
         this.red = red;
         this.green = green;
         this.blue = blue;
 
-        countLab();
+        countLch();
     }
 
     public Color(String hexColor) {
@@ -23,68 +23,113 @@ public class Color implements Serializable {
         green = Integer.parseInt(hexColor.substring(3, 5), 16);
         blue = Integer.parseInt(hexColor.substring(5, 7), 16);
 
-        countLab();
+        countLch();
     }
 
     public double distanceTo(Color color) {
-        double L2 = Math.pow(L - color.L, 2);
-        double a2 = Math.pow(a - color.a, 2);
-        double b2 = Math.pow(b - color.b, 2);
+        double kL = 1.0;
+        double kC = 1.0;
+        double kH = 1.0;
 
-        return Math.sqrt(L2 + a2 + b2);
-    }
+        double Cavg = (c + color.c) / 2;
+        double Cavg_7 = Math.pow(Cavg, 7);
 
-    public int getRed() {
-        return red;
-    }
+        double pow25_7 = Math.pow(25, 7);
 
-    public int getGreen() {
-        return green;
-    }
+        double G = 0.5 * (1 - Math.sqrt(Cavg_7 / (Cavg_7 + pow25_7)));
+        double a1_ = (1 + G) * a;
+        double a2_ = (1 + G) * color.a;
 
-    public int getBlue() {
-        return blue;
-    }
+        double C1_ = Math.sqrt(a1_ * a1_ + b * b);
+        double C2_ = Math.sqrt(a2_ * a2_ + color.b * color.b);
 
-    public double getL() {
-        return L;
-    }
+        double h1_ = (Math.atan2(b, a1_) * 180 / Math.PI + 360) % 360.0;
+        double h2_ = (Math.atan2(color.b, a2_) * 180 / Math.PI + 360) % 360.0;
 
-    public double getA() {
-        return a;
-    }
+        double dL_ = color.L - L;
+        double dC_ = C2_ - C1_;
 
-    public double getB() {
-        return b;
-    }
+        double dh_abs = Math.abs(h1_ - h2_);
+        double dh_;
 
-    private void countLab() {
-        double r = red / 255.0;
-        double g = green / 255.0;
-        double b = blue / 255.0;
+        if (C1_ == 0 || C2_ == 0)
+            dh_ = 0;
+        else {
+            if (dh_abs <= 180)
+                dh_ = h2_ - h1_;
+            else if (dh_abs > 180 && h2_ <= h1_)
+                dh_ = h2_ - h1_ + 360.0;
+            else
+                dh_ = h2_ - h1_ - 360.0;
+        }
 
-        if (r > 0.04045)
-            r = Math.pow((r + 0.055) / 1.055, 2.4);
+        double dH_ = 2 * Math.sqrt(C1_ * C2_) * Math.sin(dh_ * Math.PI / 360);
+
+        double Lavg = (L + color.L) / 2;
+        double C_avg = (C1_ + C2_) / 2;
+
+        double H_avg;
+        if (C1_ == 0 || C2_ == 0)
+            H_avg = 0;
         else
-            r = r / 12.92;
+        {
+            if (dh_abs <= 180d)
+                H_avg = (h1_ + h2_) / 2;
+            else if (dh_abs > 180d && h1_ + h2_ < 360)
+                H_avg = (h1_ + h2_ + 360) / 2;
+            else
+                H_avg = (h1_ + h2_ - 360) / 2;
+        }
 
-        if (g > 0.04045)
-            g = Math.pow((g + 0.055 ) / 1.055, 2.4);
+        double T = 1
+                - 0.17 * Math.cos((H_avg - 30) / (180 / Math.PI))
+                + 0.24 * Math.cos((H_avg * 2) / (180 / Math.PI))
+                + 0.32 * Math.cos((H_avg * 3 + 6) / (180 / Math.PI))
+                - 0.2 * Math.cos((H_avg * 4 - 63) / (180 / Math.PI));
+
+        double SL = 1 + ((0.015 * Math.pow(Lavg - 50, 2)) / Math.sqrt(20 + Math.pow(Lavg - 50, 2)));
+        double SC = 1 + 0.045 * C_avg;
+        double SH = 1 + 0.015 * T * C_avg;
+
+        double C_avg_7 = Math.pow(C_avg, 7);
+
+        double RT = -2 * Math.sqrt(C_avg_7/(C_avg_7 + pow25_7)) * Math.sin((60 * Math.exp(-Math.pow((H_avg - 275) / 25, 2))) / (180 / Math.PI));
+
+        return Math.sqrt(
+                Math.pow(dL_ / (kL*SL), 2) +
+                Math.pow(dC_ / (kC*SC), 2) +
+                Math.pow(dH_ / (kH*SH), 2) +
+                RT * (dC_ / (kC*SC)) * (dH_ / (kH*SH))
+        );
+    }
+
+    private void countLch() {
+        double red = this.red / 255.0;
+        double green = this.green / 255.0;
+        double blue = this.blue / 255.0;
+
+        if (red > 0.04045)
+            red = Math.pow((red + 0.055) / 1.055, 2.4);
         else
-            g = g / 12.92;
+            red = red / 12.92;
 
-        if (b > 0.04045)
-            b = Math.pow((b + 0.055) / 1.055, 2.4);
+        if (green > 0.04045)
+            green = Math.pow((green + 0.055 ) / 1.055, 2.4);
         else
-            b = b / 12.92;
+            green = green / 12.92;
 
-        r *= 100;
-        g *= 100;
-        b *= 100;
+        if (blue > 0.04045)
+            blue = Math.pow((blue + 0.055) / 1.055, 2.4);
+        else
+            blue = blue / 12.92;
 
-        double x = r * 0.4124 + g * 0.3576 + b * 0.1805;
-        double y = r * 0.2126 + g * 0.7152 + b * 0.0722;
-        double z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+        red *= 100;
+        green *= 100;
+        blue *= 100;
+
+        double x = red * 0.4124 + green * 0.3576 + blue * 0.1805;
+        double y = red * 0.2126 + green * 0.7152 + blue * 0.0722;
+        double z = red * 0.0193 + green * 0.1192 + blue * 0.9505;
 
         x /= 95.047;
         y /= 100.000;
@@ -106,7 +151,12 @@ public class Color implements Serializable {
             z = (7.787 * z) + (16.0 / 116.0);
 
         this.L = (116 * y) - 16;
-        this.a = 500 * (x - y);
-        this.b = 200 * (y - z);
+
+        a = 500 * (x - y);
+        b = 200 * (y - z);
+
+        this.c = Math.sqrt(a*a + b*b);
+
+        this.h = (Math.atan2(b, a) * (180 / Math.PI) + 360) % 360.0;
     }
 }
