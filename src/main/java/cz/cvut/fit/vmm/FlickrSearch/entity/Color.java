@@ -27,9 +27,9 @@ public class Color implements Serializable {
     }
 
     public double distanceTo(Color color) {
-        double kL = 1.0;
-        double kC = 1.0;
-        double kH = 1.0;
+        double kL = 1;
+        double kC = 0.4;
+        double kH = 1;
 
         double Cavg = (c + color.c) / 2;
         double Cavg_7 = Math.pow(Cavg, 7);
