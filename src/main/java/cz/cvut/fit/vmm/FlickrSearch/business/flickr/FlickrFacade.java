@@ -13,12 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-@ApplicationScoped
 public class FlickrFacade implements PhotoFacade {
 
     private Flickr flickr;
 
-    @Inject
     public FlickrFacade(Properties config) {
         String apiKey = config.getProperty("api_key");
         String sharedSecret = config.getProperty("shared_secret");
