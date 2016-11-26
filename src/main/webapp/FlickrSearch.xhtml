@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <h:head>
     <title>Flickr Search</title>
@@ -18,43 +18,78 @@
 
     <b:container>
 
-        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
 
-        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
-            <h:graphicImage library="img" name="loading.gif" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
+                  showHeader="false">
+            <h:graphicImage library="img" name="loading.gif"/>
         </p:dialog>
 
         <h:form id="searchForm">
             <b:well>
                 <b:row>
-                    <div class="col-md-2"></div>
-                    <b:inputText span="5" placeholder="Zadejte klíčová slova"
-                                 value="#{searchBean.searchModel.tags}"/>
+                    <b:inputText span="5" offset="2" placeholder="Zadejte klíčová slova"
+                                 value="#{searchBean.searchModel.tags}">
+                        <b:focus rendered="true"/>
+                    </b:inputText>
+
                     <b:colorPicker span="2" placeholder="Barva" control="wheel"
                                    value="#{searchBean.searchModel.color}"/>
+
                     <b:commandButton span="1" look="primary" value="Hledat" action="#{searchBean.searchPhotos}"
                                      update="results"/>
-                    <div class="col-md-2"></div>
                 </b:row>
             </b:well>
         </h:form>
 
-        <b:row id="results">
-            <ui:repeat value="#{searchBean.searchResult}" var="photo">
-                <b:column col-xs="6" col-md="3">
-                    <b:thumbnail>
-                        <p:lightBox>
-                            <h:outputLink value="#{photo.imageUrl}" title="#{photo.title}">
-                                <h:graphicImage value="#{photo.squareUrl}" width="100%"/>
-                            </h:outputLink>
-                            <h:outputText value="#{photo.rank}" >
-                                <f:convertNumber pattern="#0.00" />
-                            </h:outputText>
-                        </p:lightBox>
-                    </b:thumbnail>
-                </b:column>
-            </ui:repeat>
-        </b:row>
+        <h:form id="results">
+            <b:alert severity="info" styleClass="alert-block"
+                     rendered="#{searchBean.renderEmpty}">Nebyly nalezeny žádné fotky</b:alert>
+
+
+            <b:panel rendered="#{searchBean.renderSwitches}">
+                <b:row>
+                    <b:buttonGroup span="4" offset="4" styleClass="btn-group-justified">
+                        <b:buttonGroup>
+                            <b:commandButton value="Seřazené" update="results" action="#{searchBean.showSorted}"
+                                             disabled="#{searchBean.renderSorted}"
+                                             look="#{searchBean.unsortedButtonType}"/>
+                        </b:buttonGroup>
+                        <b:buttonGroup>
+                            <b:commandButton value="Neseřazené" update="results" action="#{searchBean.showUnsorted}"
+                                             disabled="#{!searchBean.renderSorted}"
+                                             look="#{searchBean.sortedButtonType}"/>
+                        </b:buttonGroup>
+                    </b:buttonGroup>
+                </b:row>
+            </b:panel>
+
+
+            <b:row rendered="#{searchBean.renderPhotos}">
+                <ui:repeat value="#{searchBean.photoResult}" var="photo">
+                    <b:column col-xs="6" col-md="3">
+                        <b:thumbnail>
+                            <p:lightBox>
+                                <h:outputLink value="#{photo.imageUrl}" title="#{photo.title}">
+                                    <h:graphicImage value="#{photo.squareUrl}" width="100%"/>
+                                </h:outputLink>
+                            </p:lightBox>
+                            <c:if test="#{searchBean.renderDistances}">
+
+
+                                <f:facet name="caption">
+                                    Vzdálenost:
+                                    <h:outputText value="#{photo.rank}">
+                                        <f:convertNumber pattern="#0.00"/>
+                                    </h:outputText>
+                                </f:facet>
+                            </c:if>
+                        </b:thumbnail>
+                    </b:column>
+                </ui:repeat>
+            </b:row>
+        </h:form>
+
     </b:container>
 
 </h:body>

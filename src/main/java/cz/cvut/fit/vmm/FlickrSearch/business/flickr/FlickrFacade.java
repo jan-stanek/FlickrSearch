@@ -8,17 +8,21 @@ import cz.cvut.fit.vmm.FlickrSearch.business.PhotoFacade;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @ApplicationScoped
 public class FlickrFacade implements PhotoFacade {
 
     private Flickr flickr;
 
-    public FlickrFacade() {
-        String apiKey = "077058273325165605911344e25e08ca";
-        String sharedSecret = "4efacc8562efec7f";
+    public FlickrFacade(Properties config) {
+        String apiKey = config.getProperty("api_key");
+        String sharedSecret = config.getProperty("shared_secret");
 
         flickr = new Flickr(apiKey, sharedSecret, new REST());
     }
