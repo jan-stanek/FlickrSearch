@@ -5,7 +5,7 @@ import cz.cvut.fit.vmm.FlickrSearch.business.SearchModel;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,7 +17,7 @@ import java.util.Properties;
 
 
 @Named
-@RequestScoped
+@SessionScoped
 public class SearchBean implements Serializable {
 
     private PhotoRepository photoRepository;
