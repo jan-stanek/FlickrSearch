@@ -1,14 +1,11 @@
 package cz.cvut.fit.vmm.FlickrSearch.presentation;
 
-import com.flickr4java.flickr.FlickrException;
 import cz.cvut.fit.vmm.FlickrSearch.business.PhotoRepository;
 import cz.cvut.fit.vmm.FlickrSearch.business.SearchModel;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -1,6 +1,5 @@
 package cz.cvut.fit.vmm.FlickrSearch.business;
 
-import com.flickr4java.flickr.FlickrException;
 import cz.cvut.fit.vmm.FlickrSearch.business.flickr.FlickrFacade;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Color;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
