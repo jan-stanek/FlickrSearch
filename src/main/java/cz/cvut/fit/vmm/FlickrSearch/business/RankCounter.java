@@ -6,7 +6,9 @@ import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jan on 16.11.2016.
@@ -24,30 +26,40 @@ public class RankCounter implements Runnable {
     public void run() {
         for (Photo photo : photos) {
             try {
-                photo.setRank(countRank(photo));
+                photo.setRanks(countRanks(photo));
             } catch (Exception e) {
-                photo.setRank(Double.NaN);
+                photo.setRanks(null);
             }
         }
     }
 
-    private double countRank(Photo photo) throws Exception {
+    private Map<Metric, Double> countRanks(Photo photo) throws Exception {
         if (color == null)
-            return 0;
+            return null;
+
+        Map<Metric, Double> res = new HashMap<Metric, Double>();
 
         BufferedImage bufferedImage = ImageIO.read(new URL(photo.getThumbUrl()));
 
-        double distance = 0;
+        double[] distances = new double[Metric.values().length];
 
-        for (int x = 0; x < bufferedImage.getWidth(); x++) {
-            for (int y = 0; y < bufferedImage.getHeight(); y++) {
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 int pixelColor = bufferedImage.getRGB(x, y);
                 Color c = new Color((pixelColor & 0x00ff0000) >> 16, (pixelColor & 0x0000ff00) >> 8, pixelColor & 0x000000ff);
-                double dist = c.distanceTo(color);
-                distance += dist;
+                for (Metric metric : Metric.values()) {
+                    distances[metric.ordinal()] += c.distanceTo(color, metric);
+                }
             }
         }
 
-        return distance / (bufferedImage.getWidth() * bufferedImage.getHeight());
+        for (Metric metric : Metric.values()) {
+            res.put(metric, distances[metric.ordinal()] / (width * height));
+        }
+
+        return res;
     }
 }

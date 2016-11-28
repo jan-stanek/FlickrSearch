@@ -2,6 +2,7 @@ package cz.cvut.fit.vmm.FlickrSearch.presentation;
 
 import cz.cvut.fit.vmm.FlickrSearch.business.PhotoRepository;
 import cz.cvut.fit.vmm.FlickrSearch.business.SearchModel;
+import cz.cvut.fit.vmm.FlickrSearch.business.Metric;
 import cz.cvut.fit.vmm.FlickrSearch.entity.Photo;
 
 import javax.annotation.PostConstruct;
@@ -24,7 +25,9 @@ public class SearchBean implements Serializable {
 
     private SearchModel searchModel;
 
-    private List<Photo> sortedPhotos;
+    private List<Photo> sortedPhotosRGB;
+    private List<Photo> sortedPhotosCIE76;
+    private List<Photo> sortedPhotosCIE2000;
     private List<Photo> unsortedPhotos;
     private List<Photo> photoResult;
 
@@ -32,10 +35,14 @@ public class SearchBean implements Serializable {
     private boolean renderSwitches;
     private boolean renderPhotos;
     private boolean renderDistances;
-    private boolean renderSorted;
 
-    private String sortedButtonType;
-    private String unsortedButtonType;
+    private boolean sortedRGBButtonSelected;
+    private boolean sortedCIE76ButtonSelected;
+    private boolean sortedCIE2000ButtonSelected;
+
+    private Metric metric;
+
+    private boolean unsortedButtonSelected;
 
     private Properties config;
 
@@ -84,31 +91,39 @@ public class SearchBean implements Serializable {
         return renderDistances;
     }
 
-    public boolean isRenderSorted() {
-        return renderSorted;
+    public boolean isUnsortedButtonSelected() {
+        return unsortedButtonSelected;
     }
 
-    public String getSortedButtonType() {
-        return sortedButtonType;
+    public boolean isSortedRGBButtonSelected() {
+        return sortedRGBButtonSelected;
     }
 
-    public String getUnsortedButtonType() {
-        return unsortedButtonType;
+    public boolean isSortedCIE76ButtonSelected() {
+        return sortedCIE76ButtonSelected;
+    }
+
+    public boolean isSortedCIE2000ButtonSelected() {
+        return sortedCIE2000ButtonSelected;
+    }
+
+    public Metric getMetric() {
+        return metric;
     }
 
     public void searchPhotos() {
         photoRepository.search(searchModel);
-        sortedPhotos = photoRepository.getSortedPhotos();
+        sortedPhotosCIE76 = photoRepository.getSortedPhotos(Metric.CIE76);
+        sortedPhotosCIE2000 = photoRepository.getSortedPhotos(Metric.CIE2000);
+        sortedPhotosRGB = photoRepository.getSortedPhotos(Metric.RGB);
         unsortedPhotos = photoRepository.getUnsortedPhotos();
 
-        if (sortedPhotos == null) {
+        if (sortedPhotosRGB == null || sortedPhotosCIE76 == null || sortedPhotosCIE2000 == null) {
             renderSwitches = false;
-            renderDistances = false;
             showUnsorted();
         } else {
             renderSwitches = true;
-            renderDistances = true;
-            showSorted();
+            showSortedCIE76();
         }
 
         if (photoResult.isEmpty()) {
@@ -119,20 +134,52 @@ public class SearchBean implements Serializable {
             renderEmpty = false;
             renderPhotos = true;
         }
-
     }
 
-    public void showSorted() {
-        renderSorted = true;
-        unsortedButtonType = "primary";
-        sortedButtonType = "default";
-        photoResult = sortedPhotos;
+    public void showSortedRGB() {
+        sortedCIE76ButtonSelected = false;
+        sortedCIE2000ButtonSelected = false;
+        sortedRGBButtonSelected = true;
+        unsortedButtonSelected = false;
+
+        renderDistances = true;
+        metric = Metric.RGB;
+
+        photoResult = sortedPhotosRGB;
+    }
+
+    public void showSortedCIE76() {
+        sortedCIE76ButtonSelected = true;
+        sortedCIE2000ButtonSelected = false;
+        sortedRGBButtonSelected = false;
+        unsortedButtonSelected = false;
+
+        renderDistances = true;
+        metric = Metric.CIE76;
+
+        photoResult = sortedPhotosCIE76;
+    }
+
+    public void showSortedCIE2000() {
+        sortedCIE76ButtonSelected = false;
+        sortedCIE2000ButtonSelected = true;
+        sortedRGBButtonSelected = false;
+        unsortedButtonSelected = false;
+
+        renderDistances = true;
+        metric = Metric.CIE2000;
+
+        photoResult = sortedPhotosCIE2000;
     }
 
     public void showUnsorted() {
-        renderSorted = false;
-        sortedButtonType = "primary";
-        unsortedButtonType = "default";
+        sortedCIE76ButtonSelected = false;
+        sortedCIE2000ButtonSelected = false;
+        sortedRGBButtonSelected = false;
+        unsortedButtonSelected = true;
+
+        renderDistances = false;
+
         photoResult = unsortedPhotos;
     }
 }

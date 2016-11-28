@@ -1,6 +1,10 @@
 package cz.cvut.fit.vmm.FlickrSearch.entity;
 
+import cz.cvut.fit.vmm.FlickrSearch.business.Metric;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Photo implements Serializable {
@@ -9,7 +13,7 @@ public class Photo implements Serializable {
     private String thumbUrl;
     private String squareUrl;
     private String imageUrl;
-    private double rank;
+    private Map<Metric, Double> ranks;
 
     public Photo(String id, String title, String thumbUrl, String squareUrl, String imageUrl) {
         this.id = id;
@@ -17,7 +21,7 @@ public class Photo implements Serializable {
         this.squareUrl = squareUrl;
         this.thumbUrl = thumbUrl;
         this.imageUrl = imageUrl;
-        this.rank = 0;
+        this.ranks = new HashMap<Metric, Double>();
     }
 
     public String getId() {
@@ -36,15 +40,24 @@ public class Photo implements Serializable {
         return imageUrl;
     }
 
-    public double getRank() {
-        return rank;
+    public double getRank(Metric metric) {
+        return ranks.get(metric);
     }
 
     public String getSquareUrl() {
         return squareUrl;
     }
 
-    public void setRank(double rank) {
-        this.rank = rank;
+    public void setRank(Metric metric, double rank) {
+        ranks.put(metric, rank);
     }
+
+    public void setRanks(Map<Metric, Double> ranks) {
+        this.ranks = ranks;
+    }
+
+    public boolean hasRanks() {
+        return ranks != null;
+    }
+
 }

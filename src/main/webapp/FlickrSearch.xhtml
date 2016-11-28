@@ -49,16 +49,26 @@
 
             <b:panel rendered="#{searchBean.renderSwitches}">
                 <b:row>
-                    <b:buttonGroup span="4" offset="4" styleClass="btn-group-justified">
+                    <b:buttonGroup span="8" offset="2" styleClass="btn-group-justified">
                         <b:buttonGroup>
-                            <b:commandButton value="Seřazené" update="results" action="#{searchBean.showSorted}"
-                                             disabled="#{searchBean.renderSorted}"
-                                             look="#{searchBean.unsortedButtonType}"/>
+                            <b:commandButton value="Seřazené (CIE76)" update="results" action="#{searchBean.showSortedCIE76}"
+                                             disabled="#{searchBean.sortedCIE76ButtonSelected}"
+                                             look="#{searchBean.sortedCIE76ButtonSelected ? 'primary' : 'default'}"/>
+                        </b:buttonGroup>
+                        <b:buttonGroup>
+                            <b:commandButton value="Seřazené (CIE2000)" update="results" action="#{searchBean.showSortedCIE2000}"
+                                             disabled="#{searchBean.sortedCIE2000ButtonSelected}"
+                                             look="#{searchBean.sortedCIE2000ButtonSelected ? 'primary' : 'default'}"/>
+                        </b:buttonGroup>
+                        <b:buttonGroup>
+                            <b:commandButton value="Seřazené (RGB)" update="results" action="#{searchBean.showSortedRGB}"
+                                             disabled="#{searchBean.sortedRGBButtonSelected}"
+                                             look="#{searchBean.sortedRGBButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                         <b:buttonGroup>
                             <b:commandButton value="Neseřazené" update="results" action="#{searchBean.showUnsorted}"
-                                             disabled="#{!searchBean.renderSorted}"
-                                             look="#{searchBean.sortedButtonType}"/>
+                                             disabled="#{searchBean.unsortedButtonSelected}"
+                                             look="#{searchBean.unsortedButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                     </b:buttonGroup>
                 </b:row>
@@ -75,11 +85,9 @@
                                 </h:outputLink>
                             </p:lightBox>
                             <c:if test="#{searchBean.renderDistances}">
-
-
                                 <f:facet name="caption">
                                     Vzdálenost:
-                                    <h:outputText value="#{photo.rank}">
+                                    <h:outputText value="#{photo.getRank(searchBean.metric)}">
                                         <f:convertNumber pattern="#0.00"/>
                                     </h:outputText>
                                 </f:facet>
