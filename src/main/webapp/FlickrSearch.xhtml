@@ -28,16 +28,22 @@
         <h:form id="searchForm">
             <b:well>
                 <b:row>
-                    <b:inputText span="5" offset="2" placeholder="Zadejte klíčová slova"
-                                 value="#{searchBean.searchModel.tags}">
+                    <b:column span="5" offset="2">
+                        <b:inputText placeholder="Zadejte klíčová slova"
+                                     value="#{searchBean.searchModel.tags}">
                         <b:focus rendered="true"/>
-                    </b:inputText>
+                        </b:inputText>
+                    </b:column>
 
-                    <b:colorPicker span="2" placeholder="Barva" control="wheel"
+                    <b:column span="2">
+                    <b:colorPicker placeholder="Barva" control="wheel"
                                    value="#{searchBean.searchModel.color}"/>
+                    </b:column>
 
-                    <b:commandButton span="1" look="primary" value="Hledat" action="#{searchBean.searchPhotos}"
+                    <b:column span="1">
+                    <b:commandButton look="primary" value="Hledat" action="#{searchBean.searchPhotos}"
                                      update="results"/>
+                    </b:column>
                 </b:row>
             </b:well>
         </h:form>

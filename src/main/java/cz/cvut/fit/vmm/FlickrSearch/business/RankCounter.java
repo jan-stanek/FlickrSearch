@@ -51,7 +51,8 @@ public class RankCounter implements Runnable {
                 int pixelColor = bufferedImage.getRGB(x, y);
                 Color c = new Color((pixelColor & 0x00ff0000) >> 16, (pixelColor & 0x0000ff00) >> 8, pixelColor & 0x000000ff);
                 for (Metric metric : Metric.values()) {
-                    distances[metric.ordinal()] += c.distanceTo(color, metric);
+                    double dist = c.distanceTo(color, metric);
+                    distances[metric.ordinal()] += dist > metric.getSame() ? dist : 0;
                 }
             }
         }
