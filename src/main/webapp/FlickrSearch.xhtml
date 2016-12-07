@@ -28,21 +28,24 @@
         <h:form id="searchForm">
             <b:well>
                 <b:row>
-                    <b:column span="5" offset="2">
-                        <b:inputText placeholder="Zadejte klíčová slova"
-                                     value="#{searchBean.searchModel.tags}">
-                        <b:focus rendered="true"/>
+                    <b:column span="5" offset="1">
+                        <b:inputText placeholder="Klíčová slova" value="#{searchBean.searchModel.tags}">
+                            <b:focus rendered="true"/>
                         </b:inputText>
                     </b:column>
 
                     <b:column span="2">
-                    <b:colorPicker placeholder="Barva" control="wheel"
-                                   value="#{searchBean.searchModel.color}"/>
+                        <b:colorPicker placeholder="Barva" control="wheel"
+                                       value="#{searchBean.searchModel.color}"/>
+                    </b:column>
+
+                    <b:column span="2">
+                        <b:inputText placeholder="Počet výsledků" value="#{searchBean.searchModel.count}"/>
                     </b:column>
 
                     <b:column span="1">
-                    <b:commandButton look="primary" value="Hledat" action="#{searchBean.searchPhotos}"
-                                     update="results"/>
+                        <b:commandButton look="primary" value="Hledat" action="#{searchBean.searchPhotos}"
+                                         update="results"/>
                     </b:column>
                 </b:row>
             </b:well>
@@ -52,34 +55,35 @@
             <b:alert severity="info" styleClass="alert-block"
                      rendered="#{searchBean.renderEmpty}">Nebyly nalezeny žádné fotky</b:alert>
 
-
             <b:panel rendered="#{searchBean.renderSwitches}">
                 <b:row>
                     <b:buttonGroup span="8" offset="2" styleClass="btn-group-justified">
                         <b:buttonGroup>
-                            <b:commandButton value="Seřazené (CIE76)" update="results" action="#{searchBean.showSortedCIE76}"
+                            <b:commandButton value="Barva (CIE76)" update="results"
+                                             action="#{searchBean.showSortedCIE76}"
                                              disabled="#{searchBean.sortedCIE76ButtonSelected}"
                                              look="#{searchBean.sortedCIE76ButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                         <b:buttonGroup>
-                            <b:commandButton value="Seřazené (CIE2000)" update="results" action="#{searchBean.showSortedCIE2000}"
+                            <b:commandButton value="Barva (CIE2000)" update="results"
+                                             action="#{searchBean.showSortedCIE2000}"
                                              disabled="#{searchBean.sortedCIE2000ButtonSelected}"
                                              look="#{searchBean.sortedCIE2000ButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                         <b:buttonGroup>
-                            <b:commandButton value="Seřazené (RGB)" update="results" action="#{searchBean.showSortedRGB}"
+                            <b:commandButton value="Barva (RGB)" update="results"
+                                             action="#{searchBean.showSortedRGB}"
                                              disabled="#{searchBean.sortedRGBButtonSelected}"
                                              look="#{searchBean.sortedRGBButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                         <b:buttonGroup>
-                            <b:commandButton value="Neseřazené" update="results" action="#{searchBean.showUnsorted}"
+                            <b:commandButton value="Relevance" update="results" action="#{searchBean.showUnsorted}"
                                              disabled="#{searchBean.unsortedButtonSelected}"
                                              look="#{searchBean.unsortedButtonSelected ? 'primary' : 'default'}"/>
                         </b:buttonGroup>
                     </b:buttonGroup>
                 </b:row>
             </b:panel>
-
 
             <b:row rendered="#{searchBean.renderPhotos}">
                 <ui:repeat value="#{searchBean.photoResult}" var="photo">

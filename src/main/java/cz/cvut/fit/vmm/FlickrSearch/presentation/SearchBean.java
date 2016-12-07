@@ -112,6 +112,11 @@ public class SearchBean implements Serializable {
     }
 
     public void searchPhotos() {
+        if (searchModel.getCount() == null)
+            searchModel.setCount(500);
+        else if (searchModel.getCount() > 500)
+            searchModel.setCount(500);
+
         photoRepository.search(searchModel);
         sortedPhotosCIE76 = photoRepository.getSortedPhotos(Metric.CIE76);
         sortedPhotosCIE2000 = photoRepository.getSortedPhotos(Metric.CIE2000);

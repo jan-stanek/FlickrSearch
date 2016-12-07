@@ -9,5 +9,5 @@ import java.util.List;
  * Created by jan on 02.11.2016.
  */
 public interface PhotoFacade extends Serializable {
-    List<Photo> search(String tags);
+    List<Photo> search(String tags, Integer count);
 }

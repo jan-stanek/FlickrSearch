@@ -7,6 +7,7 @@ public class SearchModel implements Serializable {
 
     private String tags;
     private String color;
+    private Integer count;
 
     public String getTags() {
         return tags;
@@ -22,5 +23,13 @@ public class SearchModel implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

@@ -24,14 +24,14 @@ public class FlickrFacade implements PhotoFacade {
         flickr = new Flickr(apiKey, sharedSecret, new REST());
     }
 
-    public List<Photo> search(String tags) {
+    public List<Photo> search(String tags, Integer count) {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setTags(tags.split(","));
         searchParameters.setSort(SearchParameters.RELEVANCE);
         com.flickr4java.flickr.photos.PhotoList<com.flickr4java.flickr.photos.Photo> photoList = null;
 
         try {
-            photoList = flickr.getPhotosInterface().search(searchParameters, 500, 1);
+            photoList = flickr.getPhotosInterface().search(searchParameters, count, 1);
         } catch (FlickrException e) {
             e.printStackTrace();
         }

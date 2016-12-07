@@ -39,8 +39,13 @@ public class RankCounter implements Runnable {
 
         Map<Metric, Double> res = new HashMap<Metric, Double>();
 
-        BufferedImage bufferedImage = ImageIO.read(new URL(photo.getThumbUrl()));
+        long startTime;
 
+        startTime = System.currentTimeMillis();
+        BufferedImage bufferedImage = ImageIO.read(new URL(photo.getThumbUrl()));
+        PhotoRepository.downloadTime.addAndGet(System.currentTimeMillis() - startTime);
+
+        startTime = System.currentTimeMillis();
         double[] distances = new double[Metric.values().length];
 
         int width = bufferedImage.getWidth();
@@ -60,6 +65,7 @@ public class RankCounter implements Runnable {
         for (Metric metric : Metric.values()) {
             res.put(metric, distances[metric.ordinal()] / (width * height));
         }
+        PhotoRepository.rankTime.addAndGet(System.currentTimeMillis() - startTime);
 
         return res;
     }
